@@ -3,11 +3,12 @@ import { Id } from "../../../../convex/_generated/dataModel";
 import { Button } from "@/components/ui/button";
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbSeparator, BreadcrumbList, BreadcrumbPage } from "@/components/ui/breadcrumb";
 import { Poppins } from "next/font/google";
-
+import React, { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
 import { UserButton } from "@clerk/nextjs";
+import { useProject, useRenameProject } from "../hooks/use-projects";
 
 const font = Poppins({
     subsets: ["latin"],
@@ -15,6 +16,33 @@ const font = Poppins({
 })
 
 export const Navbar = ({ projectId }: { projectId: Id<"projects"> }) => {
+    const project = useProject(projectId);
+    const renameProject = useRenameProject(projectId);
+
+    const [isRenaming, setIsRenaming] = useState(false);
+    const [name, setName] = useState("");
+
+    const handleStartRename = () => {
+        if (!project) return;
+        setName(project.name);
+        setIsRenaming(true);
+    }
+
+    const handleSubmit = () => {
+        if (!project) return;
+
+        setIsRenaming(false);
+        const trimmedName = name.trim();
+        if (!trimmedName || trimmedName === project.name) return;
+
+        renameProject({ id: project._id, name: trimmedName });
+    }
+
+    const handleKeyDown = (e: React.KeyboardEvent) => {
+        if (e.key === "Enter") handleSubmit();
+        else if (e.key === "Escape") setIsRenaming(false);
+    }
+
     return (
         <div className="flex justify-between items-center gap-x-2 p-2 bg-sidebar border-b">
             <div className="flex items-center gap-x-2">
@@ -32,9 +60,21 @@ export const Navbar = ({ projectId }: { projectId: Id<"projects"> }) => {
                         </BreadcrumbItem>
                         <BreadcrumbSeparator className="ml-0! mr-1" />
                         <BreadcrumbItem>
-                            <BreadcrumbPage className="text-sm cursor-pointer hover:text-primary font-medium max-w-40 truncate">
-                                Demo Project
-                            </BreadcrumbPage>
+                            {isRenaming ? (
+                                <input 
+                                    type="text" 
+                                    value={name} 
+                                    autoFocus 
+                                    onChange={(e) => setName(e.target.value)} 
+                                    onBlur={handleSubmit}
+                                    onKeyDown={handleKeyDown}
+                                    className="text-sm bg-transparent text-foreground outline-none focus:ring-1 focus:ring-inset focus:ring-ring font-medium max-w-40 truncate"
+                                />
+                            ) : (
+                                <BreadcrumbPage className="text-sm cursor-pointer hover:text-primary font-medium max-w-40 truncate" onClick={handleStartRename}>
+                                    {project?.name ?? "Loading..."}
+                                </BreadcrumbPage>
+                            )}
                         </BreadcrumbItem>
                     </BreadcrumbList>
                 </Breadcrumb>
