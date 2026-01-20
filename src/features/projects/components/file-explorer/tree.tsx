@@ -25,7 +25,7 @@ export const Tree = ({
     level = 0,
     projectId,
 }: TreeProps) => {
-    const [isOpen, setIsOpen] = useState(false);
+    const [isOpen, setIsOpen] = useState(true);
     const [isRenaming, setIsRenaming] = useState(false);
     const [creating, setCreating] = useState<"file" | "folder" | null>(null);
 

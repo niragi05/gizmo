@@ -10,3 +10,7 @@ export const DEFAULT_MAIN_SIZE = 1000;
 
 export const BASE_PADDING = 12;
 export const LEVEL_PADDING = 12;
+
+// Editor Constants
+
+export const UPDATE_FILE_DELAY = 1500;
