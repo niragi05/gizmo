@@ -8,6 +8,7 @@ import { FaGithub } from "react-icons/fa";
 import { Allotment } from "allotment";
 import { MIN_SIDEBAR_WIDTH, MAX_SIDEBAR_WIDTH, DEFAULT_SIDEBAR_WIDTH, DEFAULT_MAIN_SIZE } from "@/app/constants";
 import { FileExplorer } from "./file-explorer";
+import { EditorView } from "@/features/editor/components/editor-view";
 
 const Tab = ({ label, isActive, onClick }: { label: string, isActive: boolean, onClick: () => void }) => {
     return (
@@ -61,7 +62,7 @@ export const ProjectIdView = ({ projectId }: { projectId: Id<"projects"> }) => {
                             <FileExplorer projectId={projectId} />
                         </Allotment.Pane>
                         <Allotment.Pane>
-                            <div>Editor</div>
+                            <EditorView projectId={projectId} />
                         </Allotment.Pane>
                     </Allotment>
                 </div>
